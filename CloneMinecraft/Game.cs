@@ -15,9 +15,10 @@ namespace CloneMinecraft
     {
         float[] verticies =
         {
-            0f, 0.5f, 0f, //top vertex
-            -0.5f, -0.5f, 0f, //bottom left
-            0.5f, -0.5f, 0f //bottom right
+            -0.5f, 0.5f, 0f, //top left vertex - 0
+            0.5f, 0.5f, 0f, //top right vertex - 1
+            0.5f, -0.5f, 0f //bottom right - 2
+            -0.5f, -0.5f, 0f, //bottom left - 3
         };
 
         // RenderPipeline Variables
@@ -52,7 +53,7 @@ namespace CloneMinecraft
 
             vao = GL.GenVertexArray();
 
-            int vbo = GL.GenBuffer();
+            // generates the vbo
             vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, verticies.Length * sizeof(float), verticies, BufferUsageHint.StaticDraw);
@@ -62,8 +63,20 @@ namespace CloneMinecraft
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexArrayAttrib(vao, 0);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0); //unbinds buffer
-            GL.BindVertexArray(0); //unbinds vao
+            // unbinds the respective vbo and vao
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0); 
+            GL.BindVertexArray(0); 
+
+
+            //gemerates ebo
+            ebo = GL.GenBuffer();
+            //binds the ebo to openGL as an elementarraybuffer
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+            //sets the data in the Buffer
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indicies.Length * sizeof(uint), indicies, BufferUsageHint.StaticDraw);
+            //Unbinds the ebo
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+
 
             // Create Shader Program
             shaderProgram = GL.CreateProgram();
@@ -102,7 +115,8 @@ namespace CloneMinecraft
             // draw a triangle
             GL.UseProgram(shaderProgram);
             GL.BindVertexArray(vao);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
 
 
