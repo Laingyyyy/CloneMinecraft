@@ -53,6 +53,7 @@ namespace CloneMinecraft
             vao = GL.GenVertexArray();
 
             int vbo = GL.GenBuffer();
+            vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, verticies.Length * sizeof(float), verticies, BufferUsageHint.StaticDraw);
 
